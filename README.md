@@ -9,9 +9,9 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-app-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-<!-- After deploying, replace YOUR-APP-URL below and uncomment this line:
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://YOUR-APP-URL.streamlit.app)
--->
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-study-squad-nishant.streamlit.app)
+
+### [▶ Try the live app](https://ai-study-squad-nishant.streamlit.app)
 
 <img src="assets/home.png" alt="AI Study Squad home screen" width="900">
 
@@ -151,7 +151,7 @@ Set these in `.env` (local) or in Streamlit secrets (cloud):
 1. Push this repo to GitHub.
 2. Go to [share.streamlit.io](https://share.streamlit.io), click **Create app**, choose this repo, branch `main`, main file `streamlit_app.py`.
 3. Under **Advanced settings**, pick Python 3.12 and paste the contents of [`.streamlit/secrets.toml.example`](.streamlit/secrets.toml.example) with your real key.
-4. Click **Deploy**, then put the app URL in the badge at the top of this README.
+4. Click **Deploy**. The live version of this project runs at **https://ai-study-squad-nishant.streamlit.app**.
 
 `STUDY_SQUAD_PERSIST_LOGS = "false"` keeps visitors' questions private on a public app: analytics then cover each visitor's own session (plus the sample dataset).
 
