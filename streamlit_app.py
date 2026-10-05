@@ -115,7 +115,7 @@ def get_client(api_key: str):
 
 
 def api_key() -> str | None:
-    return settings.groq_api_key or st.session_state.user_api_key or None
+    return st.session_state.user_api_key.strip() or settings.groq_api_key or None
 
 
 def ask(question: str) -> None:
@@ -149,15 +149,22 @@ def on_feedback(turn: dict, agent_key: str) -> None:
 # --------------------------------------------------------------------------- sidebar
 with st.sidebar:
     st.markdown("#### :material/tune: Settings")
-    if settings.groq_api_key:
+    key_input = {
+        "type": "password",
+        "placeholder": "gsk_…",
+        "help": "Free at console.groq.com/keys. Kept only for this browser session.",
+    }
+    if settings.groq_key_problem:
+        st.warning(settings.groq_key_problem, icon=":material/key_off:")
+    if settings.groq_api_key and not settings.groq_key_problem:
         st.badge("Groq API key loaded", icon=":material/key:", color="green")
+        with st.expander("Use a different key"):
+            st.session_state.user_api_key = st.text_input(
+                "Groq API key", value=st.session_state.user_api_key, **key_input
+            )
     else:
         st.session_state.user_api_key = st.text_input(
-            "Groq API key",
-            type="password",
-            value=st.session_state.user_api_key,
-            placeholder="gsk_…",
-            help="Free at console.groq.com/keys. Kept only for this browser session.",
+            "Groq API key", value=st.session_state.user_api_key, **key_input
         )
     models = list(dict.fromkeys([settings.model, *AVAILABLE_MODELS]))
     model = st.selectbox(

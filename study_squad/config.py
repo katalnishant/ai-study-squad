@@ -55,6 +55,36 @@ def get_setting(name: str, default: str | None = None) -> str | None:
     return default
 
 
+PLACEHOLDER_KEYS = {"your_groq_api_key_here", "gsk_your_real_key", "gsk_...", "gsk_…"}
+
+
+def clean_api_key(value: str | None) -> str | None:
+    """Strip spaces, line breaks and stray quotes that often sneak in when pasting a key.
+
+    Returns None for empty values and for the placeholder text from the templates.
+    """
+    if value is None:
+        return None
+    key = str(value).strip().strip("\"'").strip()
+    if not key or key in PLACEHOLDER_KEYS:
+        return None
+    return key
+
+
+def key_problem(raw: str | None) -> str | None:
+    """Explain what looks wrong with a configured key, or None if it looks fine."""
+    if raw is None or not str(raw).strip():
+        return None
+    key = clean_api_key(raw)
+    if key is None:
+        return "The Groq key is still the placeholder text from the template."
+    if not key.startswith("gsk_"):
+        return "The Groq key should start with gsk_. It may have been pasted incompletely."
+    if len(key) < 40:
+        return "The Groq key looks too short. It may have been cut off when pasting."
+    return None
+
+
 def _as_bool(value: str | None, default: bool) -> bool:
     if value is None:
         return default
@@ -64,6 +94,7 @@ def _as_bool(value: str | None, default: bool) -> bool:
 @dataclass(frozen=True)
 class Settings:
     groq_api_key: str | None
+    groq_key_problem: str | None
     model: str
     reasoning_effort: str
     temperature: float
@@ -91,7 +122,8 @@ class Settings:
 def load_settings() -> Settings:
     data_dir = Path(get_setting("STUDY_SQUAD_DATA_DIR", str(PROJECT_ROOT / "data")))
     return Settings(
-        groq_api_key=get_setting("GROQ_API_KEY"),
+        groq_api_key=clean_api_key(raw_key := get_setting("GROQ_API_KEY")),
+        groq_key_problem=key_problem(raw_key),
         model=get_setting("GROQ_MODEL", DEFAULT_MODEL),
         reasoning_effort=get_setting("GROQ_REASONING_EFFORT", "low"),
         temperature=float(get_setting("STUDY_SQUAD_TEMPERATURE", "0.6")),

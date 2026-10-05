@@ -70,3 +70,25 @@ def test_on_reply_called_once_per_agent(fake_client):
 def test_prompts_forbid_big_headings():
     msgs = build_messages(AGENTS["Nerd"], "q")
     assert "never use level-1 or level-2 headings" in msgs[0]["content"]
+
+
+def test_api_key_cleaning_and_problems():
+    from study_squad.config import clean_api_key, key_problem
+
+    real = "gsk_" + "a" * 52
+    assert clean_api_key(f'  "{real}"\n') == real
+    assert clean_api_key("your_groq_api_key_here") is None
+    assert clean_api_key("   ") is None
+    assert key_problem(real) is None
+    assert key_problem("gsk_your_real_key") is not None
+    assert key_problem("sk-" + "a" * 50) is not None
+    assert key_problem("gsk_abc") is not None
+    assert key_problem(None) is None
+
+
+def test_auth_error_explains_streamlit_secrets():
+    class AuthenticationError(Exception):
+        pass
+
+    msg = friendly_error(AuthenticationError("401"))
+    assert "Secrets" in msg and ".env" in msg

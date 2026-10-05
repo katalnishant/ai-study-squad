@@ -156,7 +156,11 @@ def friendly_error(exc: Exception) -> str:
     name = type(exc).__name__
     text = str(exc)
     if name == "AuthenticationError":
-        return "Invalid or missing Groq API key. Add a valid key in the sidebar or .env file."
+        return (
+            "Groq rejected the API key. Locally: check GROQ_API_KEY in your .env file. "
+            "On Streamlit Cloud: Manage app → Settings → Secrets, paste the key again, then reboot the app. "
+            "You can also paste a key under 'Use a different key' in the sidebar."
+        )
     if name == "RateLimitError":
         return "Groq rate limit reached. Wait a few seconds and ask again."
     if "decommissioned" in text or name == "NotFoundError":
