@@ -1,0 +1,24 @@
+[project]
+name = "ai-study-squad"
+version = "2.0.0"
+description = "Multi-agent study assistant with RAG and learning analytics (Streamlit + Groq)."
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Nishant Katal" }]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]
+"scripts/*" = ["E402"]
